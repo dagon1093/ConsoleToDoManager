@@ -7,7 +7,7 @@ using ConsoleToDoManager.Models;
 
 namespace ConsoleToDoManager.Service
 {
-    public class ToDoService
+    public class ToDoService : IToDoService
     {
         private readonly ApplicationContext _context;
         public ToDoService()
