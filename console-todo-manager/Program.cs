@@ -27,7 +27,7 @@ class Program
                     toDoService.AddTask(title);
                     break;
                 case "2":
-                    toDoService.ListTasks();
+                    toDoService.ShowTasks( toDoService.ListTasks() );
                     break;
                 case "3":
                     Console.Write("Введите заголовок задачи: ");
@@ -35,13 +35,26 @@ class Program
                     toDoService.CompleteTask(title);
                     break;
                 case "4":
-                    //ToDo
-                    Console.WriteLine("Вы пока не можете изменить задачу");
+                    var tasks = toDoService.ListTasks();
+                    toDoService.ShowTasks(tasks);
+                    Console.Write("Введите номер задачи, которую нужно изменить: ");
+                    if(int.TryParse(Console.ReadLine(), out int editNum))
+                    {
+                        Console.Write("Введите новое название: ");
+                        string newTitle = Console.ReadLine();
+                        toDoService.EditTask(tasks[editNum - 1].Id, newTitle);
+                        Console.WriteLine("Название задачи изменено");
+                    }
                     break;
                 case "5":
-                    Console.Write("Введите заголовок задачи: ");
-                    title = Console.ReadLine();
-                    toDoService.DeleteTask(title);
+                    var tasksToDelete = toDoService.ListTasks();
+                    toDoService.ShowTasks(tasksToDelete);
+                    Console.Write("Введите номер задачи, которую нужно удалить: ");
+                    if (int.TryParse(Console.ReadLine(), out int deleteNum))
+                    {
+                        toDoService.DeleteTaskById(tasksToDelete[deleteNum - 1].Id);
+                        Console.WriteLine("Задача удалена");
+                    }                  
                     break;
                 case "0":
                     Console.WriteLine("👋 До свидания!");

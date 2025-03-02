@@ -36,6 +36,7 @@ namespace ConsoleToDoManager.Service
             if (task != null)
             {
                 _context.Tasks.Remove(task);
+                _context.SaveChanges();
                 Console.WriteLine("Задача удалена");
             }
             else
@@ -43,18 +44,30 @@ namespace ConsoleToDoManager.Service
                 Console.WriteLine("Задача не найдена");
             }
         }
-        public void ListTasks()
+
+        public void DeleteTaskById(int id)
+        {
+            var task = _context.Tasks.Find(id);
+            if (task != null)
+            {
+                _context.Tasks.Remove(task);
+                _context.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("Задача не найдена");
+            }
+        }
+        public List<ToDoTask> ListTasks()
         {
             var tasks = _context.Tasks.ToList();
+
             if (tasks.Count == 0)
             {
                 Console.WriteLine("Список задач пуст");
             }
 
-            foreach (var task in tasks)
-            {
-                Console.WriteLine(task.Title);
-            }
+            return tasks;
 
         }
 
@@ -63,6 +76,30 @@ namespace ConsoleToDoManager.Service
             throw new NotImplementedException();
         }
 
+        public void EditTask(int id, string? newTitle)
+        {
+            var task = _context.Tasks.Find(id);
+            if(task != null)
+            {
+                
+                task.Title = newTitle ?? "";
+                _context.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("Задача не найдена");
+            }
+        }
+
+        public void ShowTasks(List<ToDoTask> tasks)
+        {
+            int counter = 0;
+
+            foreach (var task in tasks)
+            {
+                Console.WriteLine($"Номер задачи:{++counter}, Название задачи: {task.Title}");
+            }
+        }
 
     }
 }
