@@ -1,11 +1,28 @@
 ﻿using ConsoleToDoManager.Service;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using ConsoleToDoManager.Data;
 
 class Program
 {
-    static ToDoService toDoService = new ToDoService();
 
     static void Main()
     {
+
+        var serviceProvider = new ServiceCollection()
+        .AddLogging(builder =>
+        {
+            builder.AddConsole();
+            builder.SetMinimumLevel(LogLevel.Information);
+        })
+        .AddDbContext<ApplicationContext>(options => options.UseNpgsql("Host=localhost;Port=5432;Database=TodoManager;Username=postgres;Password=Rp_9i7g7"))
+        .AddScoped<IToDoService, ToDoService>()
+        .BuildServiceProvider();
+
+        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+        var toDoService = serviceProvider.GetRequiredService<IToDoService>();
+
         while (true)
         {
             Console.WriteLine("------ Введи номер команды ------");

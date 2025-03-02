@@ -11,9 +11,17 @@ namespace ConsoleToDoManager.Data
     {
         public DbSet<ToDoTask> Tasks { get; set; } = null!;
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=TodoManager;Username=postgres;Password=Rp_9i7g7");
+        //}
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=TodoManager;Username=postgres;Password=Rp_9i7g7");
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ToDoTask>().HasKey(t => t.Id);
         }
     }
 }

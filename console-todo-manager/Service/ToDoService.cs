@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Threading.Tasks;
 using ConsoleToDoManager.Data;
 using ConsoleToDoManager.Models;
+using Microsoft.Extensions.Logging;
 
 namespace ConsoleToDoManager.Service
 {
     public class ToDoService : IToDoService
     {
         private readonly ApplicationContext _context;
-        public ToDoService()
+        private readonly ILogger<ToDoService> _logger;
+        public ToDoService(ApplicationContext context, ILogger<ToDoService> logger)
         {
-            _context = new ApplicationContext();
+            _context = context;
+            _logger = logger;
             _context.Database.EnsureCreated();
         }
 
@@ -21,7 +21,7 @@ namespace ConsoleToDoManager.Service
             var task = new ToDoTask { Title = title, Description = "", IsCompleted = false };
             _context.Tasks.Add(task);
             _context.SaveChanges();
-            Console.WriteLine("Задача добавлена");
+            _logger.LogInformation($"Задача: \"{task.Title}\" добавлена");
         }
 
         public ToDoTask GetTaskByTitle(string title)
@@ -37,11 +37,11 @@ namespace ConsoleToDoManager.Service
             {
                 _context.Tasks.Remove(task);
                 _context.SaveChanges();
-                Console.WriteLine("Задача удалена");
+                _logger.LogInformation($"Задача c id\"{task.Id}\" удалена");
             }
             else
             {
-                Console.WriteLine("Задача не найдена");
+                _logger.LogWarning($"Задача c id\"{task.Id}\" не найдена");
             }
         }
 
@@ -52,10 +52,11 @@ namespace ConsoleToDoManager.Service
             {
                 _context.Tasks.Remove(task);
                 _context.SaveChanges();
+                _logger.LogInformation($"Задача c id\"{task.Id}\" удалена");
             }
             else
             {
-                Console.WriteLine("Задача не найдена");
+                _logger.LogWarning($"Задача c id\"{task.Id}\" не найдена");
             }
         }
         public List<ToDoTask> ListTasks()
@@ -64,7 +65,7 @@ namespace ConsoleToDoManager.Service
 
             if (tasks.Count == 0)
             {
-                Console.WriteLine("Список задач пуст");
+                _logger.LogInformation($"Задач нет.");
             }
 
             return tasks;
@@ -87,7 +88,7 @@ namespace ConsoleToDoManager.Service
             }
             else
             {
-                Console.WriteLine("Задача не найдена");
+                _logger.LogWarning($"Не удалось отредактировать. Задача c id\"{task.Id}\" не найдена");
             }
         }
 
